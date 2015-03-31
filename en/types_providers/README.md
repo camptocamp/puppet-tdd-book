@@ -334,7 +334,7 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
 end
 ```
 
-The first thing we want to do is to list the current instances of the OpenLDAP databases and use this list as a prefetch cache for the resources. So our provider must respond to the self.instances and self.prefetch methods:
+The first thing we want to do is to list the current instances of the OpenLDAP databases and use this list as a prefetch cache for the resources. So our provider must respond to the `self.instances` and `self.prefetch` methods:
 
 1
 2
