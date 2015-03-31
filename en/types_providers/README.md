@@ -324,19 +324,16 @@ $ mkdir -p spec/unit/puppet/provider/openldap_database
 
 Next, we can create the unit tests for `openldap_database`’s `olc` provider in `spec/unit/puppet/provider/openldap_database/olc_spec.rb`:
 
-Again, the first thing to do is to require our spec_helper.rb file:
+Again, the first thing to do is to require our `spec_helper.rb` file:
 
-1
-2
-3
-4
-5
+```ruby
 require 'spec_helper'
  
 describe Puppet::Type.type(:openldap_database).provider(:olc) do
   # Tests will go here
 end
-view rawunit_provider1.rb hosted with ❤ by GitHub
+```
+
 The first thing we want to do is to list the current instances of the OpenLDAP databases and use this list as a prefetch cache for the resources. So our provider must respond to the self.instances and self.prefetch methods:
 
 1
