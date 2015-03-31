@@ -30,7 +30,7 @@ Every project needs a README file. It is common to use markdown to style its con
 If you are not familiar with the various licenses commonly used in Open Source projects, visit « Choose A License » to have a look at some options. When you find one you are happy with, drop it in a file called LICENSE in the root of your project.
 
 ## METADATA.JSON
-You should add a file named metadata.json in the root of your project in order to store some metadata needed to publish your module on the Puppet Forge.
+You should add a file named metadata.json in the root of your project in order to store some metadata needed to publish your module on the [Puppet Forge](https://forge.puppetlabs.com/).
 
 ```json
 {
@@ -62,16 +62,16 @@ You should add a file named metadata.json in the root of your project in order t
 A few interesting lines:
 
 ### LINE 8 – 9
-For the moment, we do not have dependencies, but we will probably have at least puppetlabs-stdlib later.
+For the moment, we do not have dependencies, but we will probably have at least `puppetlabs-stdlib` later.
 
 ### LINE 10 – 23
-Declare the operating system supported by your module; this information will be automatically used by rspec-puppet-facts to loop over any supported operating system for tests.
+Declare the operating system supported by your module; this information will be automatically used by `rspec-puppet-facts` to loop over any supported operating system for tests.
 
 ## CONFIGURE ACCEPTANCE TESTS
-We will use Beaker to launch acceptance tests. Beaker is the Puppetlabs’s acceptance testing tool used to test the behavior of a Puppet module on different operating systems. It can run tests on various hypervisors, including virutalbox (through Vagrant), Docker or OpenStack. You can use Beaker to test serverspec resources.
+We will use Beaker to launch acceptance tests. [Beaker](https://github.com/puppetlabs/Beaker) is the Puppetlabs’s acceptance testing tool used to test the behavior of a Puppet module on different operating systems. It can run tests on various hypervisors, including virutalbox (through Vagrant), Docker or OpenStack. You can use Beaker to test [serverspec resources](http://serverspec.org/)).
 
 ## CONFIGURE GEMFILE
-Bundler is a dependency manager tool for Ruby projects. It reads its configuration from the project’s Gemfile.
+Bundler is a dependency manager tool for Ruby projects. It reads its configuration from the project’s `Gemfile`.
 
 ```ruby
 source 'https://rubygems.org'
@@ -131,7 +131,7 @@ Hypervisor to use; here we’ll use Vagrant because it is probably the most robu
 Vagrant box to use (from [https://vagrantcloud.com](https://vagrantcloud.com))
 
 ### LINE 7
-Tells Beaker that we are using Puppet OpenSource (installation path differs from Puppet Enterprise) And one for Debian 7 64bits in spec/acceptance/nodesets/debian-7-x86_64-vagrant.yml:
+Tells Beaker that we are using Puppet OpenSource (installation path differs from Puppet Enterprise) And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7-x86_64-vagrant.yml`:
 
 ```yaml
 HOSTS:
@@ -174,13 +174,13 @@ end
 Install Puppet on every host in our nodeset. Beaker supports multiple hosts in a nodeset. This functionality will not be explained here.
 
 ### LINE 18
-Tells Beaker to scp our sourcedir into the spawned virtual machine’s /etc/puppet/modules.
+Tells Beaker to scp our sourcedir into the spawned virtual machine’s `/etc/puppet/modules`.
 
 ## CONFIGURE UNIT TESTS
-We will use rspec-puppet to run unit tests.
+We will use [rspec-puppet](https://github.com/rodjek/rspec-puppet) to run unit tests.
 
 ### CONFIGURE GEMFILE
-The `puppetlabs_spec_helper` gem provides some helpers to ease rspec-puppet configuration. Let’s add it to our Gemfile:
+The `puppetlabs_spec_helper` gem provides some helpers to ease rspec-puppet configuration. Let’s add it to our `Gemfile`:
 
 
 ```ruby
@@ -192,7 +192,7 @@ gem 'puppetlabs_spec_helper', :require => false
 ```
 
 ### CONFIGURE .FIXTURES.YML
-The .fixtures.yml file is a YAML file used by puppetlabs_spec_helper to setup an environment for your modules with all its dependencies in the `spec/fixtures directory`. You have to, at least, add an entry that adds a symlink to your code base:
+The `.fixtures.yml` file is a YAML file used by `puppetlabs_spec_helper` to setup an environment for your modules with all its dependencies in the `spec/fixtures directory`. You have to, at least, add an entry that adds a symlink to your code base:
 
 ```yaml
 fixtures:
