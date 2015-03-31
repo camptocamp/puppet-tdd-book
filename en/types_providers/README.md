@@ -431,7 +431,7 @@ Now that everything is set up, let’s write the next unit test. We want to make
 
 We’ll test with no database:
 
-`ruby
+```ruby
         context 'without databases' do
           before :each do
             described_class.expects(:slapcat).with(
@@ -447,32 +447,7 @@ We’ll test with no database:
 
 Then, with one database:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
+```ruby
         context 'with one database' do
           before :each do
             described_class.expects(:slapcat).with(
@@ -499,50 +474,11 @@ olcSuffix: dc=example,dc=com
             } )
           end
         end
-view rawwith_one_database_context.rb hosted with ❤ by GitHub
+```
+
 And finally with two databases:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
+```ruby
         context 'with two databases' do
           before :each do
             described_class.expects(:slapcat).with(
@@ -584,7 +520,8 @@ olcSuffix: dc=bar,dc=com
             } )
           end
         end
-view rawwith_two_databases_context.rb hosted with ❤ by GitHub
+```
+
 If you launch the unit tests now, it will obviously fails because self.instances returns nil and we try to call the size method on it.
 
 WRITE THE PROVIDER’S SELF.INSTANCES METHOD
