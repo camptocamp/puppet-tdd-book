@@ -310,16 +310,18 @@ etc.
 
 ## WRITE THE CUSTOM PROVIDER FOR OPENLDAP_DATABASE TYPE
 
-Now let’s write a provider for our custom type. As said, we will use the OpenLDAP configuration API to manage the databases. So we’ll use slapcat to read the configuration and ldapmodify to update it. Since we’ll not have a real OpenLDAP server running on our workstation where we run the tests, we’ll have to mock the commands.
+Now let’s write a provider for our custom type. As said, we will use the OpenLDAP configuration API to manage the databases. So we’ll use slapcat to read the configuration and `ldapmodify` to update it. Since we’ll not have a real OpenLDAP server running on our workstation where we run the tests, we’ll have to mock the commands.
 
 Let’s start, as usual, by writing the unit tests.
 
-WRITE THE UNIT TEST FOR THE OPENLDAP_DATABASE’S OLC PROVIDER
-Unit tests for providers lives in spec/unit/puppet/provider/<type>, so let’s create this directory first:
+### WRITE THE UNIT TEST FOR THE OPENLDAP_DATABASE’S OLC PROVIDER
 
-1
+Unit tests for providers lives in `spec/unit/puppet/provider/<type>`, so let’s create this directory first:
+
+```shell
 $ mkdir -p spec/unit/puppet/provider/openldap_database
-view rawmkdir3.sh hosted with ❤ by GitHub
+```
+
 Next, we can create the unit tests for openldap_database’s olc provider in spec/unit/puppet/provider/openldap_database/olc_spec.rb:
 
 Again, the first thing to do is to require our spec_helper.rb file:
