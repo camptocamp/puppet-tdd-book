@@ -522,9 +522,9 @@ olcSuffix: dc=bar,dc=com
         end
 ```
 
-If you launch the unit tests now, it will obviously fails because self.instances returns nil and we try to call the size method on it.
+If you launch the unit tests now, it will obviously fails because `self.instances` returns `nil` and we try to call the `size` method on it.
 
-WRITE THE PROVIDER’S SELF.INSTANCES METHOD
+### WRITE THE PROVIDER’S SELF.INSTANCES METHOD
 Let’s write the provider code that populates the instances Array:
 
 1
