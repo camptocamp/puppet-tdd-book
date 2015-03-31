@@ -122,26 +122,11 @@ Finished in 1.27 seconds (files took 0.67818 seconds to load)
 
 ## LAUNCH THE ACCEPTANCE TESTS
 
-ON REDHAT 7
+### ON REDHAT 7
+
 Let’s test on RedHat:
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
+
+```shell
 BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__server_spec.rb
 ...
 openldap::server
@@ -160,26 +145,11 @@ Destroying vagrant boxes
  
 Finished in 19.05 seconds (files took 2 minutes 17.4 seconds to load)
 4 examples, 0 failures
-view rawacceptance1_redhat.sh hosted with ❤ by GitHub
-ON DEBIAN 7
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
+```
+
+### ON DEBIAN 7
+
+```shell
 BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__server_spec.rb
 ...
 openldap::server
@@ -198,8 +168,9 @@ Destroying vagrant boxes
  
 Finished in 17.89 seconds (files took 1 minute 31.4 seconds to load)
 4 examples, 0 failures
-view rawacceptance1_debian.sh hosted with ❤ by GitHub
-REFACTOR
+```
+
+## REFACTOR
 
 Now that everything is working as expected, we can refactor without risking any regression.
 
