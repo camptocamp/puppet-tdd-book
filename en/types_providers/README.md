@@ -406,22 +406,7 @@ Defines the `exists?` method which returns a boolean based on whether the resour
 
 And let’s test:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/provider/openldap_database/olc_spec.rb SPEC_OPTS=-fd
 ...
 Puppet::Type::Openldap_database::ProviderOlc
@@ -438,8 +423,10 @@ Puppet::Type::Openldap_database::ProviderOlc
  
 Finished in 0.02769 seconds (files took 0.44447 seconds to load)
 4 examples, 0 failures
-view rawrun_unit_test3.sh hosted with ❤ by GitHub
-WRITE THE UNIT TESTS FOR THE SELF.INSTANCES METHOD
+```
+
+### WRITE THE UNIT TESTS FOR THE SELF.INSTANCES METHOD
+
 Now that everything is set up, let’s write the next unit test. We want to make sure that the self.instances method returns the right resources:
 
 We’ll test with no database:
