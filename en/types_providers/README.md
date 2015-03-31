@@ -367,29 +367,16 @@ end
 ```
 
 ### WRITE THE OPENLDAP_DATABASE’S OLC PROVIDER
-The puppet providers for the openldap_database type lives in lib/puppet/provider/openldap_database, so let’s create this directory first:
 
-1
+The puppet providers for the `openldap_database` type lives in `lib/puppet/provider/openldap_database`, so let’s create this directory first:
+
+```shell
 $ mkdir -p lib/puppet/provider/openldap_database
-view rawmkdir4.sh hosted with ❤ by GitHub
-Then we can create the olc provider for the openldap_database type in lib/puppet/provider/openldap_database/olc.rb with a self.instances and a self.prefetch methods plus some things we’ll need:
+```
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
+Then we can create the `olc` provider for the `openldap_database` type in `lib/puppet/provider/openldap_database/olc.rb` with a `self.instances` and a `self.prefetch` methods plus some things we’ll need:
+
+```ruby
 Puppet::Type.type(:openldap_database).provide(:olc) do
  
   commands :slapcat => 'slapcat', :ldapmodify => 'ldapmodify'
@@ -406,15 +393,16 @@ Puppet::Type.type(:openldap_database).provide(:olc) do
     @property_hash[:ensure] == :present
   end
 end
-view rawolc1.rb hosted with ❤ by GitHub
-Line 3:
+```
+
+#### Line 3:
 Declares commands we will use (used by confinement) and creates helper methods dynamically for each command.
 
-Line 5:
+#### Line 5:
 Creates accessors (getters and setters) for each property using the @property_hash instance variable created by the self.prefetch method
 
-Line 13 – 15:
-DefineS the exists? method which returns a boolean base on whether the ressource is prefetch.
+#### Line 13 – 15:
+DefineS the exists? method which returns a boolean base on whether the resource is prefetch.
 
 And let’s test:
 
