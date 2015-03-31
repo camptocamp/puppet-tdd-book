@@ -5,5 +5,5 @@
 * [Create a simple class](simple_class/README.md)
 * [Create a more complex class and refactor it](complex_class/README.md)
 * [Create a custom type and provider](type_provider/README.md)
-* Create custom function
+* [Create custom function](function/README.md)
 
