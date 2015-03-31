@@ -336,33 +336,7 @@ end
 
 The first thing we want to do is to list the current instances of the OpenLDAP databases and use this list as a prefetch cache for the resources. So our provider must respond to the `self.instances` and `self.prefetch` methods:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
+```ruby
 require 'spec_helper'
  
 describe Puppet::Type.type(:openldap_database).provider(:olc) do
@@ -390,8 +364,9 @@ describe Puppet::Type.type(:openldap_database).provider(:olc) do
     end
   end
 end
-view rawunit_provider2.rb hosted with ❤ by GitHub
-WRITE THE OPENLDAP_DATABASE’S OLC PROVIDER
+```
+
+### WRITE THE OPENLDAP_DATABASE’S OLC PROVIDER
 The puppet providers for the openldap_database type lives in lib/puppet/provider/openldap_database, so let’s create this directory first:
 
 1
