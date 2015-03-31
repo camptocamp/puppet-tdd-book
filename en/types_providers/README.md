@@ -681,21 +681,9 @@ o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}
 
 Finally, let’s run the acceptance test to see if it really works.
 
-ON REDHAT 7
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+#### ON REDHAT 7
+
+```shell
 $ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb
 ...
 openldap_database
@@ -710,24 +698,13 @@ Destroying vagrant boxes
  
 Finished in 28.65 seconds (files took 2 minutes 0.8 seconds to load)
 2 examples, 0 failures
-view rawrun_acceptance_redhat.sh hosted with ❤ by GitHub
+```
+
 Yes, it does!
 
-ON DEBIAN 7
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+#### ON DEBIAN 7
+
+```shell
 BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb
 ...
 openldap_database
@@ -742,5 +719,6 @@ Destroying vagrant boxes
  
 Finished in 36.46 seconds (files took 1 minute 48.05 seconds to load)
 2 examples, 0 failures
-view rawrun_acceptance_debian.sh hosted with ❤ by GitHub
+```
+
 Now that we have a functional type and provider to manage an OpenLDAP database, we will create a function to manage the database’s Root Password in the coming part IV.
