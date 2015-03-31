@@ -399,51 +399,7 @@ Finished in 41.89 seconds (files took 3 minutes 47.9 seconds to load)
 
 Now we have the behavior we wanted. We can connect to an ldap server. At least on Centos/RedHat7… But what happens if you run the tests on Debian 7? Let’s see…
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
+```shell
 $ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
@@ -489,43 +445,21 @@ Failed examples:
  
 rspec ./spec/acceptance/openldap__client_spec.rb:5 # openldap::client running puppet code should work with no errors
 rspec ./spec/acceptance/openldap__client_spec.rb:15 # openldap::client running puppet code can connect to an ldap test server with ldapsearch
-view rawspec_acceptance5.sh hosted with ❤ by GitHub
-It fails because the package openldap-clients does not exist on Debian and thus, the ldapsearch command is not installed.
+```
 
-On Debian, the ldapsearch command lives in the ldap-utils package and not in openldap-clients.
+It fails because the package `openldap-clients` does not exist on Debian and thus, the `ldapsearch` command is not installed.
 
-We have to be sure that, on Debian family OS, Puppet installs the ldap-utils package and not the openldap-clients package. For that, we can test the content of the catalog with a unit tests.
+On Debian, the `ldapsearch` command lives in the `ldap-utils` package and not in `openldap-clients`.
 
-rspec-puppet sends the :facts hash to the Puppet compiler to populate the facts or top scope variables you use in your manifests.
+We have to be sure that, on Debian family OS, Puppet installs the `ldap-utils` package and not the `openldap-clients` package. For that, we can test the content of the catalog with a unit tests.
+
+`rspec-puppet` sends the `:facts` hash to the Puppet compiler to populate the facts or top scope variables you use in your manifests.
 
 We have to add some logic in our unit test because our catalog will be different.
 
-You can either populate the :facts hash yourself:
+You can either populate the `:facts` hash yourself:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
+```ruby
 require 'spec_helper'
  
 describe 'openldap::client' do
@@ -550,38 +484,11 @@ describe 'openldap::client' do
     ) }
   end
 end
-view rawunit_test4.rb hosted with ❤ by GitHub
-Or, probably better, let rspec-puppet-facts (https://github.com/mcanevet/rspec-puppet-facts) populate the :facts hash for you and avoid duplicate code:
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
+```
+
+Or, probably better, let [`rspec-puppet-facts`](https://github.com/mcanevet/rspec-puppet-facts) populate the `:facts` hash for you and avoid duplicate code:
+
+```ruby
 require 'spec_helper'
  
 describe 'openldap::client' do
@@ -612,18 +519,14 @@ describe 'openldap::client' do
     end
   end
 end
+```
 
 #### LINE 4
-Loop over every supported operating system declared in your metadata.json.
+Loop over every supported operating system declared in your `metadata.json`.
 
-Add the rspec-puppet-facts gem to your Gemfile:
+Add the `rspec-puppet-facts` gem to your `Gemfile`:
 
-1
-2
-3
-4
-5
-6
+```ruby
 source 'https://rubygems.org'
  
 gem 'puppet',                 :require => false
@@ -634,40 +537,19 @@ view rawGemfile.rb hosted with ❤ by GitHub
 And update your gemset:
 1
 $ bundle update
-view rawbundle_update.sh hosted with ❤ by GitHub
-Load rspec-puppet-facts in your spec/spec_helper.rb
+```
 
-1
-2
-3
+Load `rspec-puppet-facts` in your `spec/spec_helper.rb`
+
+```ruby
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
-view rawspec_helper.rb hosted with ❤ by GitHub
+```
+
 Then, run the unit tests again
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
+
+```ruby
 $ bundle exec rake spec SPEC_OPTS=-fd
 ...
 openldap::client
@@ -691,19 +573,11 @@ Finished in 1.01 seconds (files took 0.69753 seconds to load)
 Failed examples:
  
 rspec ./spec/classes/openldap__client_spec.rb:15 # openldap::client on debian-7-x86_64 should contain Package[openldap-clients] with ensure => :present and name => "ldap-utils"
-view rawrake_spec5.sh hosted with ❤ by GitHub
-Now we can fix the openldap::client class:
+```
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+Now we can fix the `openldap::client` class:
+
+```puppet
 class openldap::client {
   $package_name = $::osfamily ? {
     'Debian' => 'ldap-utils',
@@ -714,20 +588,11 @@ class openldap::client {
     name   => $package_name,
   }
 }
-view rawmanifest3.pp hosted with ❤ by GitHub
+```
+
 And run the tests again
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
+
+```shell
 $ bundle exec rake spec SPEC_OPTS=-fd
 ...
 openldap::client
@@ -740,25 +605,13 @@ openldap::client
 ...
 Finished in 1.1 seconds (files took 0.70695 seconds to load)
 4 examples, 0 failures
-view rawrake_spec6.sh hosted with ❤ by GitHub
+```
+
 It works!
 
 Let’s try the acceptance test with the Debian7 nodeset to test the actual behavior:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+```shell
 $ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
@@ -773,7 +626,8 @@ Destroying vagrant boxes
  
 Finished in 34.33 seconds (files took 4 minutes 8.8 seconds to load)
 2 examples, 0 failures
-view rawspec_acceptance6.sh hosted with ❤ by GitHub
+```
+
 It works too!
 
-Now that you know how to develop a simple Puppet class in a behavior/test driver manner, we will see in Part 2 how to code a more complex class.
+Now that you know how to develop a simple Puppet class in a behavior/test driver manner, we will see in Chapter 3 how to code a more complex class.
