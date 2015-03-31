@@ -254,50 +254,7 @@ end
 
 And launch the unit tests again:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/type/openldap_database_spec.rb SPEC_OPTS=-fd
 ...
 Puppet::Type::Openldap_database
@@ -342,7 +299,8 @@ Puppet::Type::Openldap_database
  
 Finished in 0.30884 seconds (files took 0.73265 seconds to load)
 26 examples, 0 failures
-view rawrun_unit_test2.sh hosted with ❤ by GitHub
+```
+
 We should ideally validate more things:
 the suffix should be /dc=[^,]+(,dc=[^,]+)*/
 the directory should be an absolute path
