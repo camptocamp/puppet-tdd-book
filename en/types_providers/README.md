@@ -302,7 +302,7 @@ Finished in 0.30884 seconds (files took 0.73265 seconds to load)
 ```
 
 We should ideally validate more things:
-* the suffix should be /dc=[^,]+(,dc=[^,]+)*/
+* the suffix should be `/dc=[^,]+(,dc=[^,]+)*/`
 * the directory should be an absolute path
 etc.
 
