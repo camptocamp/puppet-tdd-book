@@ -402,7 +402,7 @@ Declares commands we will use (used by confinement) and creates helper methods d
 Creates accessors (getters and setters) for each property using the @property_hash instance variable created by the self.prefetch method
 
 #### Line 13 – 15:
-Defines the `exists?` method which returns a boolean base on whether the resource is prefetched.
+Defines the `exists?` method which returns a boolean based on whether the resource is prefetched.
 
 And let’s test:
 
