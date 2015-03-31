@@ -613,17 +613,10 @@ Finished in 0.11436 seconds (files took 0.45002 seconds to load)
 Now that we have the `self.instances` method, we want to be able to create a database. We will now code the `self.prefetch` method, to pass the discovered instances to the catalog resources.
 
 ### THE PREFETCH METHOD
-The prefetch method is used to build a cache of the resources which can be used to easily assert the existence and synchronisation state of the resource, using the @property_hash instance variable.
+The `prefetch` method is used to build a cache of the resources which can be used to easily assert the existence and synchronisation state of the resource, using the `@property_hash` instance variable.
 
-1
-2
-3
-4
-5
-6
-7
-8
-  def self.prefetch(resources)
+```ruby
+def self.prefetch(resources)
     databases = instances
     resources.keys.each do |name|
       if provider = databases.find{ |database| database.name == name }
@@ -631,20 +624,21 @@ The prefetch method is used to build a cache of the resources which can be used 
       end
     end
   end
-view rawprefetch.rb hosted with ❤ by GitHub
-Line 1:
+```
+
+#### Line 1:
 The method takes a list of catalog resources as argument, and is expected to associate RAL resources to each of them, if they already exist.
 
-Line 2:
-Retrieve all the discovered resources from the self.instances method. This is the most common way to prefetch resources when resources can all be automatically discovered by self.instances.
+#### Line 2:
+Retrieve all the discovered resources from the self.instances method. This is the most common way to prefetch resources when resources can all be automatically discovered by `self.instances`.
 
-Line 4:
+#### Line 4:
 For each catalog resource passed to the method, look into the discovered instances to find a RAL resource with a matching name.
 
-Line 5:
-If a matching resource is found, associate it to the catalog resource. This will set the values of the @property_hash instance variable for this resource based on the values set in the self.instances method for this resource.
+#### Line 5:
+If a matching resource is found, associate it to the catalog resource. This will set the values of the `@property_hash` instance variable for this resource based on the values set in the `self.instances` method for this resource.
 
-THE UNIT TEST FOR THE CREATE METHOD
+### THE UNIT TEST FOR THE CREATE METHOD
 Now let’s check that, when we want to create a resource, it generates a valid ldif and that the resource exists. In spec/unit/puppet/provider/openldap_database/olc_spec.rb:
 
 THE CREATE METHOD
