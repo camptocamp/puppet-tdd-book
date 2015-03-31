@@ -427,21 +427,11 @@ Finished in 0.02769 seconds (files took 0.44447 seconds to load)
 
 ### WRITE THE UNIT TESTS FOR THE SELF.INSTANCES METHOD
 
-Now that everything is set up, let’s write the next unit test. We want to make sure that the self.instances method returns the right resources:
+Now that everything is set up, let’s write the next unit test. We want to make sure that the `self.instances` method returns the right resources:
 
 We’ll test with no database:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
+`ruby
         context 'without databases' do
           before :each do
             described_class.expects(:slapcat).with(
@@ -453,7 +443,8 @@ We’ll test with no database:
             expect(described_class.instances.size).to eq(0)
           end
         end
-view rawwithout_databases_context.rb hosted with ❤ by GitHub
+```
+
 Then, with one database:
 
 1
