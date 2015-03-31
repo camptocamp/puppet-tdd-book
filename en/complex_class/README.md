@@ -102,20 +102,8 @@ class openldap::server {
 ## LAUNCH THE UNIT TESTS
 
 Now, if you launch the unit tests, it should work:
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+
+```shell
 $ bundle exec rake spec SPEC_OPTS=-fd SPEC=spec/classes/openldap__server_spec.rb
 ...
 openldap::server
