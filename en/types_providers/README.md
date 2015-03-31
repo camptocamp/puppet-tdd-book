@@ -612,7 +612,7 @@ Finished in 0.11436 seconds (files took 0.45002 seconds to load)
 
 Now that we have the `self.instances` method, we want to be able to create a database. We will now code the `self.prefetch` method, to pass the discovered instances to the catalog resources.
 
-## THE PREFETCH METHOD
+### THE PREFETCH METHOD
 The prefetch method is used to build a cache of the resources which can be used to easily assert the existence and synchronisation state of the resource, using the @property_hash instance variable.
 
 1
