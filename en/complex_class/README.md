@@ -78,24 +78,11 @@ end
 
 When we declare the `openldap::server` class, we want the catalog to contain a service resource named `slapd` that requires a package named `slapd` on Debian and `openldap-servers` on RedHat.
 
-WRITE THE PUPPET CODE
+## WRITE THE PUPPET CODE
 
 Now, let’s write the actual Puppet code:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+```puppet
 class openldap::server {
   $package_name = $::osfamily ? {
     'Debian' => 'slapd',
@@ -110,8 +97,9 @@ class openldap::server {
     enable => true,
   }
 }
-view rawmanifests1.pp hosted with ❤ by GitHub
-LAUNCH THE UNIT TESTS
+```
+
+## LAUNCH THE UNIT TESTS
 
 Now, if you launch the unit tests, it should work:
 1
