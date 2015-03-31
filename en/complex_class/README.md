@@ -118,8 +118,9 @@ openldap::server
 ...
 Finished in 1.27 seconds (files took 0.67818 seconds to load)
 6 examples, 0 failures
-view rawrake_spec1.sh hosted with ❤ by GitHub
-LAUNCH THE ACCEPTANCE TESTS
+```
+
+## LAUNCH THE ACCEPTANCE TESTS
 
 ON REDHAT 7
 Let’s test on RedHat:
