@@ -302,12 +302,13 @@ Finished in 0.30884 seconds (files took 0.73265 seconds to load)
 ```
 
 We should ideally validate more things:
-the suffix should be /dc=[^,]+(,dc=[^,]+)*/
-the directory should be an absolute path
+* the suffix should be /dc=[^,]+(,dc=[^,]+)*/
+* the directory should be an absolute path
 etc.
+
 …but this will be left as an exercise for you.
 
-WRITE THE CUSTOM PROVIDER FOR OPENLDAP_DATABASE TYPE
+## WRITE THE CUSTOM PROVIDER FOR OPENLDAP_DATABASE TYPE
 
 Now let’s write a provider for our custom type. As said, we will use the OpenLDAP configuration API to manage the databases. So we’ll use slapcat to read the configuration and ldapmodify to update it. Since we’ll not have a real OpenLDAP server running on our workstation where we run the tests, we’ll have to mock the commands.
 
