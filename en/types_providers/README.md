@@ -183,48 +183,7 @@ It Works!
 Now let’s validate the attributes value.
 We want to ensure that ensure matches present or absent and that backend matches either bdb or hdb (the 2 current supported OpenLDAP database backends) and defaults to hdb:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
+```ruby
   describe 'when validating attribute values' do
     describe 'ensure' do
       [ :present, :absent ].each do |value|
@@ -267,28 +226,11 @@ We want to ensure that ensure matches present or absent and that backend matches
         } ) }.to raise_error(Puppet::Error, /Invalid value/)
       end
     end
-view rawunit_type4.rb hosted with ❤ by GitHub
+```
+
 And now we can adapt our custom type:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
+```ruby
 Puppet::Type.newtype(:openldap_database) do
   @doc = "Manages OpenLDAP BDB and HDB databases."
  
@@ -308,7 +250,8 @@ Puppet::Type.newtype(:openldap_database) do
     desc "The directory where the BDB files containing this database and associated indexes live."
   end
 end
-view rawopenldap_database2.rb hosted with ❤ by GitHub
+```
+
 And launch the unit tests again:
 
 1
