@@ -1,16 +1,18 @@
 # Set up your environment
 
-In this series of blog posts, we will write a Puppet module that manages OpenLDAP client and OpenLDAP server. We will make this module compatible with both Debian 7 and RedHat 7. We will explain all the aspects of Puppet Agile development through the detailed examples of class, define, type, provider, function, and fact. Disclaimer: This blog posts are widely inspired by the wonderful tutorial to write puppet-lint plugins, so you may notice some similarities in structures or sentences.
+In this series of blog posts, we will write a Puppet module that manages OpenLDAP client and OpenLDAP server. We will make this module compatible with both Debian 7 and RedHat 7. We will explain all the aspects of Puppet Agile development through the detailed examples of class, define, type, provider, function, and fact.
+
+*Disclaimer: This blog posts are widely inspired by the wonderful [tutorial to write puppet-lint plugins](http://puppet-lint.com/developer/tutorial/), so you may notice some similarities in structures or sentences.*
 
 ## PREREQUISITES
 
-* Ruby 1.9.3 (or above) and knowledge of the language
-* Bundler
-* Virtualbox
-* Vagrant
-* Knowledge of the rspec testing framework
-* Knowledge of the Beaker acceptance framework
-* Knowledge of serverspec
+* [Ruby](https://www.ruby-lang.org/) 1.9.3 (or above) and knowledge of the language
+* [Bundler](http://bundler.io/)
+* [Virtualbox](https://www.virtualbox.org/)
+* [Vagrant](https://www.vagrantup.com/)
+* Knowledge of the [rspec testing framework](http://rspec.info/)
+* Knowledge of the [Beaker acceptance framework](http://github.com/puppetlabs/beaker)
+* Knowledge of [serverspec](http://serverspec.org/)
 
 ## SETUP
 
