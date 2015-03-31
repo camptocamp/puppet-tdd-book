@@ -1,6 +1,6 @@
 # Create a more complex class and refactor it
 
-Now that we have all our [setup](setup/README.md) done and a functional class to manage the OpenLDAP client part, let’s deal with a more complex part: the server class.
+Now that we have all our [setup](setup/README.md) done and a [functional class](simple_class/README.md) to manage the OpenLDAP client part, let’s deal with a more complex part: the server class.
 
 WRITE THE ACCEPTANCE TESTS
 
