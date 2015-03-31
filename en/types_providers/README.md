@@ -1,6 +1,6 @@
 # Create a custom type and provider
 
-Now that we can install our OpenLDAP server and ensure that it is running, we want to be able to manage OpenLDAP databases.
+Now that we can [install our OpenLDAP server](complex_class/README.md) and ensure that it is running, we want to be able to manage OpenLDAP databases.
 For that, we will create an OpenLDAP Puppet type and a provider to manage databases using OpenLDAP’s live configuration API. We will do all this using TDD, of course!
 
 WRITE THE ACCEPTANCE TESTS
