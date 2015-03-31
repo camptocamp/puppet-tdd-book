@@ -573,40 +573,7 @@ end
 
 And if we test now:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/provider/openldap_database/olc_spec.rb SPEC_OPTS=-fd
 ...
 Puppet::Type::Openldap_database::ProviderOlc
@@ -641,7 +608,8 @@ Puppet::Type::Openldap_database::ProviderOlc
  
 Finished in 0.11436 seconds (files took 0.45002 seconds to load)
 16 examples, 0 failures
-view rawrun_unit_test4.sh hosted with ❤ by GitHub
+```
+
 Now that we have the self.instances method, we want to be able to create a database. We will now code the self.prefetch method, to pass the discovered instances to the catalog resources.
 
 THE PREFETCH METHOD
