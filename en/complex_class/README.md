@@ -2,34 +2,11 @@
 
 Now that we have all our [setup](setup/README.md) done and a [functional class](simple_class/README.md) to manage the OpenLDAP client part, let’s deal with a more complex part: the server class.
 
-WRITE THE ACCEPTANCE TESTS
+## WRITE THE ACCEPTANCE TESTS
 
-Let’s write the acceptance tests to code the behavior we want in spec/acceptance/openldap__server_spec.rb:
+Let’s write the acceptance tests to code the behavior we want in `spec/acceptance/openldap__server_spec.rb`:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
+```ruby
 require 'spec_helper_acceptance'
  
 describe 'openldap::server' do
@@ -54,46 +31,15 @@ describe 'openldap::server' do
     end
   end
 end
-view rawacceptance_openldap__server_spec.rb hosted with ❤ by GitHub
-openldap::server, the server is listening on port 389 and that slapd service is running and enabled at boot time. No need to run it for now because it will obviously fail as the openldap::serverdoes not exist yet.
+```
 
-WRITE THE UNIT TESTS
+`openldap::server`, the server is listening on port 389 and that slapd service is running and enabled at boot time. No need to run it for now because it will obviously fail as the `openldap::server` does not exist yet.
 
-Let’s write the unit tests skeleton for our openldap::serverclass in spec/classes/openldap__server_spec.rb:
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
+## WRITE THE UNIT TESTS
+
+Let’s write the unit tests skeleton for our `openldap::serverclass` in `spec/classes/openldap__server_spec.rb`:
+
+```ruby
 require 'spec_helper'
  
 describe 'openldap::server' do
@@ -128,8 +74,9 @@ describe 'openldap::server' do
     end
   end
 end
-view rawunit_openldap__server_spec.rb hosted with ❤ by GitHub
-When we declare the openldap::serverclass, we want the catalog to contain a service resource named ‘slapd’ that requires a package named ‘slapd’ on Debian and ‘openldap-servers’ on RedHat.
+```
+
+When we declare the `openldap::server` class, we want the catalog to contain a service resource named `slapd` that requires a package named `slapd` on Debian and `openldap-servers` on RedHat.
 
 WRITE THE PUPPET CODE
 
