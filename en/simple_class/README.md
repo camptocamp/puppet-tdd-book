@@ -1,0 +1,689 @@
+# Create a simple class
+
+Now that all the [setup work is done](setup/README.md), you can start writing some code. You are going to develop this module in a behavior/test driven manner, meaning you will write tests to describe how the module should behave before writing the actual code.
+
+We will create an openldap::client class that, when declared, will install the OpenLDAP clients tools, including the ldapsearch command, so that we can connect to an LDAP server.
+
+## WRITE YOUR FIRST ACCEPTANCE TEST
+
+### GETTING STARTED
+
+Now for the first tests, we will create a test to validate the `openldap::client` class' behavior in `spec/acceptance/openldap__client_spec.rb`. By convention, you should use a double underscore to replace the double colon in the class name.
+
+The first thing to do in any test file is require our `spec_helper_acceptance.rb` file.
+
+```ruby
+require 'spec_helper_acceptance'
+ 
+describe 'openldap::client' do
+  # tests will go here
+end
+```
+
+### THE FIRST ACCEPTANCE TEST: TESTING THAT THE PUPPET CATALOG CONVERGES AT FIRST RUN
+
+```ruby
+require 'spec_helper_acceptance'
+ 
+describe 'openldap::client' do
+  describe 'running puppet code' do
+    it 'should work with no errors' do
+      pp = <<-EOS
+        class { 'openldap::client': }
+      EOS
+ 
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+  end
+end
+```
+
+#### LINE 6 – 8
+Store the Puppet manifest to run with `apply_manifest()` in the pp variable.
+
+#### LINE 10
+Run the manifest and catch any failure.
+
+#### LINE 11
+Run the manifest a second time and catch any change. Your manifest should converge at first run.
+
+If you run your tests right now, you should see a nasty block of errors because the openldap::client class doesn’t actually exist yet. Let’s test with the centos7 nodeset:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+...
+openldap::client
+  running puppet code
+localhost $ scp /tmp/beaker20150301-13807-1ch9wrp centos-7-x64:/tmp/apply_manifest.pp.cMq5yJ {:ignore => }
+    should work with no errors (FAILED - 1)
+Destroying vagrant boxes
+==> centos-7-x64: Forcing shutdown of VM...
+==> centos-7-x64: Destroying VM and associated drives...
+ 
+Failures:
+ 
+  1) openldap::client running puppet code should work with no errors
+     Failure/Error: apply_manifest(pp, :catch_failures => true)
+     Beaker::Host::CommandFailure:
+       Host 'centos-7-x64' exited with 1 running:
+        puppet apply --verbose --detailed-exitcodes /tmp/apply_manifest.pp.cMq5yJ
+       Last 10 lines of output were:
+       	Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Could not find declared class openldap::client at /tmp/apply_manifest.pp.cMq5yJ:1 on node centos-7-x64
+       	Wrapped exception:
+       	Could not find declared class openldap::client
+       	Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Could not find declared class openldap::client at /tmp/apply_manifest.pp.cMq5yJ:1 on node centos-7-x64
+...
+Finished in 13.13 seconds (files took 3 minutes 51 seconds to load)
+1 example, 1 failure
+ 
+Failed examples:
+ 
+rspec ./spec/acceptance/openldap__client_spec.rb:5 # openldap::client running puppet code should work with no errors
+view rawspec_acceptance1.sh hosted with ❤ by GitHub
+LINE 1
+The command to launch includes the nodeset to use in the environment variable BEAKER_set and specify the acceptance test to run.
+
+LINE 3 – 4
+The label of the describe blocks in the acceptance test (line 3 and 4 of spec/acceptance/openldap__client_spec.rb)
+
+LINE 5
+Scp Puppet manifests to the virtual machine
+
+LINE 6
+Result of the test (failure)
+
+LINE 13 – 22
+Detail of the failure
+
+LINE 24
+Acceptance test run timer summary
+
+LINE 25
+Acceptance test result summary
+
+LINE 27 – 29
+Failure summary   It basically says that the Puppet catalog does not even compile because it can’t find the openldap::client class. So let’s write a unit test that verifies that, at least, the catalog compiles.
+
+WRITE YOUR FIRST UNIT TEST
+
+ 
+
+GETTING STARTED
+We’ll now write a unit test for our openldap::client class that validates that the Puppet catalog compiles. Unit tests for classes lives in spec/classes, so let’s create the directory first.
+
+
+1
+$ mkdir spec/classes
+view rawsetup1.sh hosted with ❤ by GitHub
+Then, we’ll create a unit test file for the class openldap::client in spec/classes/openldap__client_spec.rb.
+
+The first thing to do in any test file is to require our spec_helper.rb file.
+
+1
+2
+3
+4
+5
+require ‘spec_helper’
+ 
+describe 'openldap::client' do
+  # tests will go here
+end
+view rawunit_test1.rb hosted with ❤ by GitHub
+THE FIRST UNIT TEST : TESTING THAT THE CATALOG COMPILES
+As first test, you should always be sure that your catalog compiles.
+1
+2
+3
+4
+5
+require 'spec_helper'
+ 
+describe 'openldap::client' do
+  it { is_expected.to compile.with_all_deps }
+end
+view rawunit_test2.rb hosted with ❤ by GitHub
+LINE 4
+Test that verifies that the catalog actually compiles.
+
+If you run your test right now, you should also see a big block of errors because the class does not exist yet.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  example at ./spec/classes/openldap__client_spec.rb:4 (FAILED - 1)
+ 
+Failures:
+ 
+  1) openldap::client 
+     Failure/Error: it { is_expected.to compile.with_all_deps }
+     Puppet::Error:
+       Could not find class openldap::client for foo.example.com on node foo.example.com
+...
+Finished in 0.09918 seconds (files took 0.73802 seconds to load)
+1 example, 1 failure
+ 
+Failed examples:
+ 
+rspec ./spec/classes/openldap__client_spec.rb:4 # openldap::client 
+view rawrake_spec1.sh hosted with ❤ by GitHub
+LINE 1
+The command to run to launch unit tests. It tells bundler to exec the rake task spec (defined in puppetlabs_spec_helper) with the environment variable SPEC_OPTS set to -d which sets the output format to documentation for a cleaner output.
+
+LINE 3
+The label of the describe block (line 3 of spec/classes/openldap__client_spec.rb)
+
+LINE 4
+Result of the unit test
+
+LINE 6 – 11
+Details of the failures
+
+LINE 13
+Unit test timer summary
+
+LINE 14
+Unit test summary
+
+LINE 16 – 18
+Failures summary
+
+WRITE THE CLASS
+
+ 
+
+GETTING STARTED
+Now that everything is set up, let’s write the actual Puppet code! First, create the directory where our manifests will live.
+1
+$ mkdir manifests
+view rawsetup2.sh hosted with ❤ by GitHub
+Next, create our openldap::client class
+
+1
+2
+class openldap::client {
+}
+view rawmanifest1.pp hosted with ❤ by GitHub
+If you save and run the unit tests again now, you’ll see that now that the class exists, our unit test passes.
+1
+2
+3
+4
+5
+6
+7
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  should compile the catalogue without cycles
+...
+Finished in 0.12892 seconds (files took 0.68366 seconds to load)
+1 example, 0 failures
+view rawrake_spec2.sh hosted with ❤ by GitHub
+and our acceptance test also passes.
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+...
+openldap::client
+  running puppet code
+localhost $ scp /tmp/beaker20150301-6649-14wr0e3 centos-7-x64:/tmp/apply_manifest.pp.tvxw9J {:ignore => }
+localhost $ scp /tmp/beaker20150301-6649-m7w845 centos-7-x64:/tmp/apply_manifest.pp.sVZ7Le {:ignore => }
+    should work with no errors
+Destroying vagrant boxes
+==> centos-7-x64: Forcing shutdown of VM...
+==> centos-7-x64: Destroying VM and associated drives...
+ 
+Finished in 24.44 seconds (files took 3 minutes 54.3 seconds to load)
+1 example, 0 failures
+view rawspec_acceptance2.sh hosted with ❤ by GitHub
+but it doesn’t yet do what we want… Let’s add the acceptance test that describe what we really want, i.e. be able to connect to an ldap server.
+
+THE NEXT CHECK: TESTING THAT WE CAN ACTUALLY CONNECT TO AN LDAP SERVER
+
+You’ll test that you can really connect to a public ldap test server with ldapsearch. First, you need to create a method that will launch the ldapsearch command. Put it in your spec_helper_acceptance.rb so that you can use it in all your acceptance test files
+1
+2
+3
+def ldapsearch(cmd, exit_codes = [0,1], &block)
+  shell("ldapsearch #{cmd}", :acceptable_exit_codes => exit_codes, &block)
+end
+
+LINE 1
+Function declaration
+
+LINE 2
+Use the shell beaker DSL function to actually launch command
+
+Now you can use it in your acceptance test:
+require 'spec_helper_acceptance'
+ 
+describe 'openldap::client' do
+  describe 'running puppet code' do
+    it 'should work with no errors' do
+      pp = <<-EOS
+        class { 'openldap::client': }
+      EOS
+ 
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+ 
+    it 'can connect to an ldap test server with ldapsearch' do
+      ldapsearch('-LLL -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
+        expect(r.stdout).to match(/dn: dc=example,dc=com/)
+      end
+    end
+  end
+end
+view rawopenldap__client_spec3.rb hosted with ❤ by GitHub
+LINE 15 – 19
+Declare a new test that actually runs the ldapsearch command. If you save and run beaker you’ll have an error because it doesn’t find the ldapsearch command:
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+...
+openldap::client
+  running puppet code
+localhost $ scp /tmp/beaker20150301-22766-1prxndo centos-7-x64:/tmp/apply_manifest.pp.uGDdAM {:ignore => }
+localhost $ scp /tmp/beaker20150301-22766-3hpl3l centos-7-x64:/tmp/apply_manifest.pp.tTv0wx {:ignore => }
+    should work with no errors
+    can connect to an ldap test server with ldapsearch (FAILED - 1)
+Destroying vagrant boxes
+==> centos-7-x64: Forcing shutdown of VM...
+==> centos-7-x64: Destroying VM and associated drives...
+ 
+Failures:
+ 
+  1) openldap::client running puppet code can connect to an ldap test server with ldapsearch
+     Failure/Error: ldapsearch('ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
+     Beaker::Host::CommandFailure:
+       Host 'centos-7-x64' exited with 127 running:
+        ldapsearch ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password
+       Last 10 lines of output were:
+       	bash: ldapsearch: command not found
+...
+Finished in 24.45 seconds (files took 4 minutes 55.3 seconds to load)
+2 examples, 1 failure
+ 
+Failed examples:
+ 
+rspec ./spec/acceptance/openldap__client_spec.rb:15 # openldap::client running puppet code can connect to an ldap test server with ldapsearch
+view rawspec_acceptance3.sh hosted with ❤ by GitHub
+The ldapsearch command is available in the openldap-client package on RedHat, so let’s be sure that a package resource with named openldap-clients exists in the catalog.
+
+1
+2
+3
+4
+5
+6
+7
+8
+describe ‘openldap::client’ do
+  it { is_expected.to compile.with_all_deps }
+  it { is_expected.to contain_package('openldap-clients').with(
+    {
+      :ensure => :present,
+    }
+  ) }
+end
+view rawunit_test3.rb hosted with ❤ by GitHub
+If you save and run the unit tests, you should have an error because you don’t actually have a file resource named openldap-clients in your catalog
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  should compile the catalogue without cycles
+  should contain Package[openldap-clients] with ensure => :present (FAILED - 1)
+ 
+Failures:
+ 
+  1) openldap::client should contain Package[openldap-clients] with ensure => :present
+     Failure/Error: it { is_expected.to contain_package('openldap-clients').with(
+       expected that the catalogue would contain Package[openldap-clients]
+     # ./spec/classes/openldap__client_spec.rb:5:in `block (2 levels) in <top (required)>'
+...
+Finished in 0.79859 seconds (files took 0.72733 seconds to load)
+2 examples, 1 failure
+ 
+Failed examples:
+ 
+rspec ./spec/classes/openldap__client_spec.rb:5 # openldap::client should contain Package[openldap-clients] with ensure => :present
+view rawrake_spec3.sh hosted with ❤ by GitHub
+So, let’s fix this adding the installation of ldap client tools in openldap::client class:
+
+1
+2
+3
+4
+5
+class openldap::client {
+  package { 'openldap-clients':
+    ensure => present,
+  }
+}
+view rawmanifest2.pp hosted with ❤ by GitHub
+And launch the unit tests again:
+1
+2
+3
+4
+5
+6
+7
+8
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  should compile the catalogue without cycles
+  should contain Package[openldap-clients] with ensure => :present
+...
+Finished in 1.24 seconds (files took 0.69623 seconds to load)
+2 examples, 0 failures
+view rawrake_spec4.sh hosted with ❤ by GitHub
+Then, the acceptance tests:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+...
+openldap::client
+  running puppet code
+localhost $ scp /tmp/beaker20150301-450-1jb3jab centos-7-x64:/tmp/apply_manifest.pp.R1XgIN {:ignore => }
+localhost $ scp /tmp/beaker20150301-450-1ddmrlq centos-7-x64:/tmp/apply_manifest.pp.JOoDYn {:ignore => }
+    should work with no errors
+    can connect to an ldap test server with ldapsearch
+Destroying vagrant boxes
+==> centos-7-x64: Forcing shutdown of VM...
+==> centos-7-x64: Destroying VM and associated drives...
+ 
+Finished in 41.89 seconds (files took 3 minutes 47.9 seconds to load)
+2 examples, 0 failures
+view rawspec_acceptance4.sh hosted with ❤ by GitHub
+Now we have the behavior we wanted. We can connect to an ldap server. At least on Centos/RedHat7… But what happens if you run the tests on Debian 7? Let’s see…
+
+LINE 4
+Loop over every supported operating system declared in your metadata.json.
+
+Add the rspec-puppet-facts gem to your Gemfile:
+
+1
+2
+3
+4
+5
+6
+source 'https://rubygems.org'
+ 
+gem 'puppet',                 :require => false
+gem 'beaker-rspec',           :require => false
+gem 'puppetlabs_spec_helper', :require => false
+gem 'rspec-puppet-facts',     :require => false
+view rawGemfile.rb hosted with ❤ by GitHub
+And update your gemset:
+1
+$ bundle update
+view rawbundle_update.sh hosted with ❤ by GitHub
+Load rspec-puppet-facts in your spec/spec_helper.rb
+
+1
+2
+3
+require 'puppetlabs_spec_helper/module_spec_helper'
+require 'rspec-puppet-facts'
+include RspecPuppetFacts
+view rawspec_helper.rb hosted with ❤ by GitHub
+Then, run the unit tests again
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  on debian-7-x86_64
+    should compile the catalogue without cycles
+    should contain Package[openldap-clients] with ensure => :present and name => "ldap-utils" (FAILED - 1)
+  on redhat-7-x86_64
+    should compile the catalogue without cycles
+    should contain Package[openldap-clients] with ensure => :present and name => "openldap-clients"
+ 
+Failures:
+ 
+  1) openldap::client on debian-7-x86_64 should contain Package[openldap-clients] with ensure => :present and name => "ldap-utils"
+     Failure/Error: it { is_expected.to contain_package('openldap-clients').with(
+       expected that the catalogue would contain Package[openldap-clients] with name set to "ldap-utils" but it is set to "openldap-clients"
+     # ./spec/classes/openldap__client_spec.rb:15:in `block (4 levels) in <top (required)>'
+...
+Finished in 1.01 seconds (files took 0.69753 seconds to load)
+4 examples, 1 failure
+ 
+Failed examples:
+ 
+rspec ./spec/classes/openldap__client_spec.rb:15 # openldap::client on debian-7-x86_64 should contain Package[openldap-clients] with ensure => :present and name => "ldap-utils"
+view rawrake_spec5.sh hosted with ❤ by GitHub
+Now we can fix the openldap::client class:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+class openldap::client {
+  $package_name = $::osfamily ? {
+    'Debian' => 'ldap-utils',
+    'RedHat' => 'openldap-clients',
+  }
+  package { 'openldap-clients':
+    ensure => present,
+    name   => $package_name,
+  }
+}
+view rawmanifest3.pp hosted with ❤ by GitHub
+And run the tests again
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+$ bundle exec rake spec SPEC_OPTS=-fd
+...
+openldap::client
+  on debian-7-x86_64
+    should compile the catalogue without cycles
+    should contain Package[openldap-clients] with ensure => :present and name => "ldap-utils"
+  on redhat-7-x86_64
+    should compile the catalogue without cycles
+    should contain Package[openldap-clients] with ensure => :present and name => "openldap-clients"
+...
+Finished in 1.1 seconds (files took 0.70695 seconds to load)
+4 examples, 0 failures
+view rawrake_spec6.sh hosted with ❤ by GitHub
+It works!
+
+Let’s try the acceptance test with the Debian7 nodeset to test the actual behavior:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+$ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+...
+openldap::client
+  running puppet code
+localhost $ scp /tmp/beaker20150301-11248-qtq1sw debian-7-x64:/tmp/apply_manifest.pp.zR7atA {:ignore => }
+localhost $ scp /tmp/beaker20150301-11248-1uv28s2 debian-7-x64:/tmp/apply_manifest.pp.e6JdFV {:ignore => }
+    should work with no errors
+    can connect to an ldap test server with ldapsearch
+Destroying vagrant boxes
+==> debian-7-x64: Forcing shutdown of VM...
+==> debian-7-x64: Destroying VM and associated drives...
+ 
+Finished in 34.33 seconds (files took 4 minutes 8.8 seconds to load)
+2 examples, 0 failures
+view rawspec_acceptance6.sh hosted with ❤ by GitHub
+It works too!
+
+Now that you know how to develop a simple Puppet class in a behavior/test driver manner, we will see in Part 2 how to code a more complex class.
