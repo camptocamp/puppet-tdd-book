@@ -322,7 +322,7 @@ Unit tests for providers lives in `spec/unit/puppet/provider/<type>`, so let’s
 $ mkdir -p spec/unit/puppet/provider/openldap_database
 ```
 
-Next, we can create the unit tests for openldap_database’s olc provider in spec/unit/puppet/provider/openldap_database/olc_spec.rb:
+Next, we can create the unit tests for `openldap_database`’s `olc` provider in `spec/unit/puppet/provider/openldap_database/olc_spec.rb`:
 
 Again, the first thing to do is to require our spec_helper.rb file:
 
