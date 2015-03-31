@@ -202,14 +202,14 @@ fixtures:
 
 ### CONFIGURE RAKEFILE
 
-You need to require puppetlabs_spec_helper/rake_tasks in your Rakefile so that you can call the spec rake task that will run the spec_prep task for preparing your test environment using the .fixtures.yml file, then run the spec_standalone task that actually launches the unit tests, and finally run the spec_clean task to clean up your testing environment by deleting all the stuff in the spec/fixtures directory.
+You need to require `puppetlabs_spec_helper/rake_tasks` in your `Rakefile` so that you can call the spec rake task that will run the `spec_prep` task for preparing your test environment using the `.fixtures.yml` file, then run the `spec_standalone task` that actually launches the unit tests, and finally run the `spec_clean` task to clean up your testing environment by deleting all the stuff in the `spec/fixtures` directory.
 
 ```ruby
 require 'puppetlabs_spec_helper/rake_tasks'
 ```
 
 ### CONFIGURE SPEC/SPEC_HELPER.RB
-Simply use require 'puppetlabs_spec_helper/module_spec_helper' for now
+Simply use require `puppetlabs_spec_helper/module_spec_helper` for now
 
 ```ruby
 require 'puppetlabs_spec_helper/module_spec_helper'
