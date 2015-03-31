@@ -3,35 +3,11 @@
 Now that we can [install our OpenLDAP server](complex_class/README.md) and ensure that it is running, we want to be able to manage OpenLDAP databases.
 For that, we will create an OpenLDAP Puppet type and a provider to manage databases using OpenLDAP’s live configuration API. We will do all this using TDD, of course!
 
-WRITE THE ACCEPTANCE TESTS
+## WRITE THE ACCEPTANCE TESTS
 
-First, let’s create an acceptance test in spec/acceptance/openldap_database_spec.rb for our new type “openldap_database”
+First, let’s create an acceptance test in `spec/acceptance/openldap_database_spec.rb` for our new type `openldap_database`
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
+```ruby
 require 'spec_helper_acceptance'
  
 describe 'openldap_database' do
@@ -57,64 +33,40 @@ describe 'openldap_database' do
     end
   end
 end
-view rawacceptance.rb hosted with ❤ by GitHub
-WRITE THE CUSTOM TYPE
+```
+
+## WRITE THE CUSTOM TYPE
 
 Let’s write a custom Puppet type that has these properties:
 
-is ensurable
-has suffix as namevar
-has backend and directory properties
-WRITE THE UNIT TESTS FOR THE OPENLDAP_DATABASE TYPE
-Unit tests for Puppet types live in spec/unit/puppet/type, so let’s create this directory first.
+* is ensurable
+* has suffix as namevar
+* has backend and directory properties
 
-1
+## WRITE THE UNIT TESTS FOR THE OPENLDAP_DATABASE TYPE
+
+Unit tests for Puppet types live in `spec/unit/puppet/type`, so let’s create this directory first.
+
+```shell
 $ mkdir -p spec/unit/puppet/type
-view rawmkdir1.sh hosted with ❤ by GitHub
-Then we can create our unit tests for our openldap_database type in spec/unit/puppet/type/openldap_database_spec.rb.
+```
 
-The first thing to do is to require our spec_helper.rb file:
+Then we can create our unit tests for our `openldap_database` type in `spec/unit/puppet/type/openldap_database_spec.rb`.
 
-1
-2
-3
-4
-5
+The first thing to do is to require our `spec_helper.rb` file:
+
+
+```ruby
 require 'spec_helper'
  
 describe Puppet::Type.type(:openldap_database) do
   # Tests will go here
 end
-view rawunit_type1.rb hosted with ❤ by GitHub
+```
+
 First, let’s validate the attributes of our custom type. We have to be sure that it accepts suffix and provider parameters and ensure, backend and directory properties:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
+```ruby
 require 'spec_helper'
  
 describe Puppet::Type.type(:openldap_database) do
@@ -142,59 +94,42 @@ describe Puppet::Type.type(:openldap_database) do
     end
   end
 end
-view rawunit_type2.rb hosted with ❤ by GitHub
-Line 1:
-Load spec/spec_helper.rb
+```
 
-Line 4:
-Loop over all supported operating systems (in metadata.json)
+#### Line 1:
+Load `spec/spec_helper.rb`
 
-Line 5:
+#### Line 4:
+Loop over all supported operating systems (in `metadata.json`)
+
+#### Line 5:
 Create a new rspec context for the operating system currently being tested
 
-Line 7 – 11:
+#### Line 7 – 11:
 Stub all facts before each test
 
-Lines 14 – 18:
+#### Lines 14 – 18:
 Loop over each desired parameter and validate it
 
-Line 19 – 23:
+#### Line 19 – 23:
 Loop over each desired property and validate it
 Let’s also make sure that suffix is the namevar of our type:
 
-1
-2
-3
-4
-5
+```ruby
   describe "namevar validation" do
     it "should have :suffix as its namevar" do
       expect(described_class.key_attributes).to eq([:suffix])
     end
   end
-view rawunit_type3.rb hosted with ❤ by GitHub
-WRITE THE OPENLDAP_DATABASE TYPE
-The puppet custom types live in lib/puppet/type, so let’s create this directory first:
+```
 
-We can then write our puppet type to manage OpenLDAP databases in lib/puppet/type/openldap_database.rb:
+### WRITE THE OPENLDAP_DATABASE TYPE
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
+The puppet custom types live in `lib/puppet/type`, so let’s create this directory first:
+
+We can then write our puppet type to manage OpenLDAP databases in `lib/puppet/type/openldap_database.rb`:
+
+```ruby
 Puppet::Type.newtype(:openldap_database) do
   @doc = "Manages OpenLDAP BDB and HDB databases."
  
@@ -212,33 +147,11 @@ Puppet::Type.newtype(:openldap_database) do
     desc "The directory where the BDB files containing this database and associated indexes live."
   end
 end
-view rawopenldap_database1.rb hosted with ❤ by GitHub
+```
+
 Let’s test:
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/type/openldap_database_spec.rb SPEC_OPTS=-fd
 ...
 Puppet::Type::Openldap_database
@@ -263,7 +176,8 @@ Puppet::Type::Openldap_database
  
 Finished in 0.12127 seconds (files took 0.72435 seconds to load)
 12 examples, 0 failures
-view rawrun_unit_test1.sh hosted with ❤ by GitHub
+```
+
 It Works!
 
 Now let’s validate the attributes value.
