@@ -639,9 +639,10 @@ For each catalog resource passed to the method, look into the discovered instanc
 If a matching resource is found, associate it to the catalog resource. This will set the values of the `@property_hash` instance variable for this resource based on the values set in the `self.instances` method for this resource.
 
 ### THE UNIT TEST FOR THE CREATE METHOD
-Now let’s check that, when we want to create a resource, it generates a valid ldif and that the resource exists. In spec/unit/puppet/provider/openldap_database/olc_spec.rb:
 
-THE CREATE METHOD
+Now let’s check that, when we want to create a resource, it generates a valid ldif and that the resource exists. In `spec/unit/puppet/provider/openldap_database/olc_spec.rb`:
+
+### THE CREATE METHOD
 1
 2
 3
