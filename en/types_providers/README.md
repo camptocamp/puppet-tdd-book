@@ -643,38 +643,8 @@ If a matching resource is found, associate it to the catalog resource. This will
 Now let’s check that, when we want to create a resource, it generates a valid ldif and that the resource exists. In `spec/unit/puppet/provider/openldap_database/olc_spec.rb`:
 
 ### THE CREATE METHOD
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
+
+```ruby
   def create
     ldif = %Q{dn: olcDatabase=#{resource[:backend]},cn=config
 changetype: add
@@ -707,7 +677,8 @@ o: #{resource[:suffix].split(/,?dc=/).delete_if { |c| c.empty? }.join('.')}
     end
     @property_hash[:ensure] = :present
   end
-view rawcreate.rb hosted with ❤ by GitHub
+```
+
 Finally, let’s run the acceptance test to see if it really works.
 
 ON REDHAT 7
