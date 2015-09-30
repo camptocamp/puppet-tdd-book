@@ -1,6 +1,9 @@
-Puppet Test Driven Development part IV: create a custom function
+# Create a custom function
+
 Now that we have a custom type and provider to manage OpenLDAP databases, we will add two properties to manage <code>rootdn</code> and <code>rootpw</code> to declare the admin user of the database. Normally, you should use the <code>slappasswd</code> tool to hash a password (by default, it used the SSHA algorithm, but we don't want to depend on this tool installed on the Puppet master, so we'll hash the clear password using a pure Ruby approach).
-Write the acceptance test
+
+## Write the acceptance test
+
 First, we'll write the acceptance test. We want to be able to connect to the database using admin credentials. Let's add a new context in <code>spec/acceptance/openldap_database_spec.rb</code>:
 
   context 'when setting rootdn and rootpw' do
@@ -28,7 +31,8 @@ First, we'll write the acceptance test. We want to be able to connect to the dat
     end
   end
 
-Write the unit test
+## Write the unit test
+
 Now let's write the unit test. Unit tests for custom functions live in <code>spec/unit/puppet/parser/functions</code>, so let's create this directory first:
 
 mkdir -p spec/unit/puppet/parser/functions
@@ -69,7 +73,9 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
   end
 end
 Everything is now set up, so let's start writing some tests.
-Check that the function exists
+
+### Check that the function exists
+
 Let's first validate that the function is available:
 
       it 'should exist' do
@@ -117,7 +123,9 @@ rspec ./spec/unit/puppet/parser/functions/openldap_password_spec.rb:15 # false o
 rspec ./spec/unit/puppet/parser/functions/openldap_password_spec.rb:15 # false on redhat-7-x86_64 should exist
 
 It obviously fails because we don't have the <code>openldap_password</code> function code yet. Let's start writing it.
-Write the function
+
+## Write the function
+
 Now that we have a skeleton for our unit tests, let's start writing the function. Puppet custom functions live in <code>lib/puppet/parser/functions</code>, so let's create this directory:
 
 mkdir -p lib/puppet/parser/functions
@@ -146,7 +154,8 @@ function_openldap_password
 Finished in 0.06929 seconds (files took 0.77882 seconds to load)
 2 examples, 0 failures
 
-Write more tests
+## Write more tests
+
 We want to make sure that our function takes one and only one argument (the plain text password). So let's check that it fails if we pass zero or two arguments:
 
       context 'when passing no arguments' do
@@ -199,7 +208,9 @@ Finished in 0.14474 seconds (files took 0.707 seconds to load)
 6 examples, 0 failures
 
 It works!
-Write the unit test that verifies the hash
+
+## Write the unit test that verifies the hash
+
 Ultimately, we want our function to return the SSHA of the password with the 4 first characters of the SHA1 of the fqdn as salt.
 
 Let's calculate the expected result in <code>irb</code> (that's what slappasswd does), the fqdn <code>foo.example.com</code> comes from rspec-puppet-facts:
@@ -226,7 +237,7 @@ irb(main):005:0> "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{password}#
         end
       end
 
-Write the function code
+## Write the function code
 
 module Puppet::Parser::Functions
   newfunction(:openldap_password, :type => :rvalue, :doc => <<-EOS
@@ -244,7 +255,8 @@ module Puppet::Parser::Functions
 end
 
 This is not very secure because every hash on one node is generated using the same salt, but it is just an example.
-Launch the unit test
+
+## Launch the unit test
 
 $ bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
 ...
@@ -270,8 +282,10 @@ Finished in 0.12028 seconds (files took 0.45853 seconds to load)
 8 examples, 0 failures
 
 It works!
-Launch the acceptance test
-On RedHat
+
+## Launch the acceptance test
+
+### On RedHat
 
 $ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb 
 ...
@@ -294,7 +308,9 @@ Finished in 33.09 seconds (files took 1 minute 53.74 seconds to load)
 4 examples, 0 failures
 
 It works! We can create a database with a rootdn and a rootpw and connect to it using the credentials.
-On Debian
+
+### On Debian
+
 Now let's test on Debian:
 
 BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb 
@@ -318,4 +334,3 @@ Finished in 36.59 seconds (files took 1 minute 31.02 seconds to load)
 4 examples, 0 failures
 
 Everything is OK.
-In our next blog post, we'll see how to create a custom fact that returns the OpenLDAP version installed on the system so that we can use it to confine our providers.
