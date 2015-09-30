@@ -6,6 +6,7 @@ Now that we have a custom type and provider to manage OpenLDAP databases, we wil
 
 First, we'll write the acceptance test. We want to be able to connect to the database using admin credentials. Let's add a new context in <code>spec/acceptance/openldap_database_spec.rb</code>:
 
+```ruby
   context 'when setting rootdn and rootpw' do
     it 'should work with no errors' do
       pp = <<-EOS
@@ -30,31 +31,39 @@ First, we'll write the acceptance test. We want to be able to connect to the dat
       end
     end
   end
+```
 
 ## Write the unit test
 
 Now let's write the unit test. Unit tests for custom functions live in <code>spec/unit/puppet/parser/functions</code>, so let's create this directory first:
 
-mkdir -p spec/unit/puppet/parser/functions
+```shell
+$ mkdir -p spec/unit/puppet/parser/functions
+```
 
 The first thing we'll do, as usual, is require our spec_helper:
 
+```ruby
 require 'spec_helper'
 
 describe Puppet::Parser::Functions.function(:openldap_password) do
   # Unit tests go here
 end
+```
 
 We'll then need to initialize the <code>scope</code> variable needed to call function on it.
 
+```ruby
 require 'spec_helper'
 
 describe Puppet::Parser::Functions.function(:openldap_password) do
   let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
 end
+```
 
 Now that we have a scope, we can loop over all supported operating systems using <code>rspec-puppet-facts</code> and stub every fact in the top scope:
 
+```ruby
 require 'spec_helper'
 
 describe Puppet::Parser::Functions.function(:openldap_password) do
@@ -72,20 +81,25 @@ describe Puppet::Parser::Functions.function(:openldap_password) do
     end
   end
 end
+```
+
 Everything is now set up, so let's start writing some tests.
 
 ### Check that the function exists
 
 Let's first validate that the function is available:
 
+```ruby
       it 'should exist' do
         expect(
           Puppet::Parser::Functions.function('openldap_password')
         ).to eq('function_openldap_password')
       end
+```
 
 Let's try the unit tests:
 
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
 ...
 false
@@ -121,6 +135,7 @@ Failed examples:
 
 rspec ./spec/unit/puppet/parser/functions/openldap_password_spec.rb:15 # false on debian-7-x86_64 should exist
 rspec ./spec/unit/puppet/parser/functions/openldap_password_spec.rb:15 # false on redhat-7-x86_64 should exist
+```
 
 It obviously fails because we don't have the <code>openldap_password</code> function code yet. Let's start writing it.
 
@@ -128,10 +143,12 @@ It obviously fails because we don't have the <code>openldap_password</code> func
 
 Now that we have a skeleton for our unit tests, let's start writing the function. Puppet custom functions live in <code>lib/puppet/parser/functions</code>, so let's create this directory:
 
-mkdir -p lib/puppet/parser/functions
-
+```shell
+$ mkdir -p lib/puppet/parser/functions
+```
 Now let's write the function:
 
+```ruby
 module Puppet::Parser::Functions
   newfunction(:openldap_password, :type => :rvalue, :doc => <<-EOS
     Returns the openldap password hash from the clear text password.
@@ -140,9 +157,11 @@ module Puppet::Parser::Functions
     # Function code goes here
   end
 end
+```
 
 If we launch the unit tests again, it should work because the function now does exist:
 
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
 ...
 function_openldap_password
@@ -153,11 +172,13 @@ function_openldap_password
 
 Finished in 0.06929 seconds (files took 0.77882 seconds to load)
 2 examples, 0 failures
+```
 
 ## Write more tests
 
 We want to make sure that our function takes one and only one argument (the plain text password). So let's check that it fails if we pass zero or two arguments:
 
+```ruby
       context 'when passing no arguments' do
         it 'should fail' do
           expect {
@@ -173,9 +194,11 @@ We want to make sure that our function takes one and only one argument (the plai
           }.to raise_error Puppet::ParseError, /Wrong number of arguments given/
         end
       end
+```
 
 And the actual code in the function:
 
+```ruby
 module Puppet::Parser::Functions
   newfunction(:openldap_password, :type => :rvalue, :doc => <<-EOS
     Returns the openldap password hash from the clear text password.
@@ -185,10 +208,12 @@ module Puppet::Parser::Functions
     raise(Puppet::ParseError, "openldap_password(): Wrong number of arguments given") if args.size < 1 or args.size > 1
   end
 end
+```
 
 Let's test:
 
-bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
+```shell
+$ bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
 ...
 function_openldap_password
   on debian-7-x86_64
@@ -206,6 +231,7 @@ function_openldap_password
 
 Finished in 0.14474 seconds (files took 0.707 seconds to load)
 6 examples, 0 failures
+```
 
 It works!
 
@@ -215,6 +241,7 @@ Ultimately, we want our function to return the SSHA of the password with the 4 f
 
 Let's calculate the expected result in <code>irb</code> (that's what slappasswd does), the fqdn <code>foo.example.com</code> comes from rspec-puppet-facts:
 
+```shell
 $ irb
 irb(main):001:0> require 'base64'
 => true
@@ -226,9 +253,11 @@ irb(main):004:0> salt=Digest::SHA1.digest('foo.example.com')[0..4]
 => "\xC4\x1D\xBC,\xE6"
 irb(main):005:0> "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{password}#{salt}")}#{salt}").chomp
 => "{SSHA}jZdUkbyDYvmpSKg0x/k879g+RY7EHbws5g=="
+```
 
  So we code the unit test this way:
 
+```ruby
       context 'when giving a secret' do
         it 'should return the SSHA of the password with the first 4 characters of sha1("foo.example.com") as salt' do
           expect(
@@ -236,9 +265,11 @@ irb(main):005:0> "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{password}#
           ).to eq('{SSHA}jZdUkbyDYvmpSKg0x/k879g+RY7EHbws5g==')
         end
       end
+```
 
 ## Write the function code
 
+```ruby
 module Puppet::Parser::Functions
   newfunction(:openldap_password, :type => :rvalue, :doc => <<-EOS
     Returns the openldap password hash from the clear text password.
@@ -253,11 +284,13 @@ module Puppet::Parser::Functions
     "{SSHA}" + Base64.encode64("#{Digest::SHA1.digest("#{password}#{salt}")}#{salt}").chomp
   end
 end
+```
 
 This is not very secure because every hash on one node is generated using the same salt, but it is just an example.
 
 ## Launch the unit test
 
+```shell
 $ bundle exec rake spec SPEC=spec/unit/puppet/parser/functions/openldap_password_spec.rb SPEC_OPTS=-fd
 ...
 function_openldap_password
@@ -280,6 +313,7 @@ function_openldap_password
 
 Finished in 0.12028 seconds (files took 0.45853 seconds to load)
 8 examples, 0 failures
+```
 
 It works!
 
@@ -287,6 +321,7 @@ It works!
 
 ### On RedHat
 
+```shell
 $ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb 
 ...
 openldap_database
@@ -306,6 +341,7 @@ Destroying vagrant boxes
 
 Finished in 33.09 seconds (files took 1 minute 53.74 seconds to load)
 4 examples, 0 failures
+```
 
 It works! We can create a database with a rootdn and a rootpw and connect to it using the credentials.
 
@@ -313,7 +349,8 @@ It works! We can create a database with a rootdn and a rootpw and connect to it 
 
 Now let's test on Debian:
 
-BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb 
+```shell
+$ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap_database_spec.rb 
 ...
 openldap_database
   when not setting rootdn and rootpw
@@ -332,5 +369,6 @@ Destroying vagrant boxes
 
 Finished in 36.59 seconds (files took 1 minute 31.02 seconds to load)
 4 examples, 0 failures
+```
 
 Everything is OK.
