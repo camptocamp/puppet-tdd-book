@@ -53,52 +53,53 @@ If you run your tests right now, you should see a nasty block of errors because 
 
 ```shell
 $ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb
+Beaker::Hypervisor, found some docker boxes to create
+Provisioning docker
+provisioning centos-7-x64
+Using docker server at 0.0.0.0
 ...
 openldap::client
   running puppet code
-localhost $ scp /tmp/beaker20150301-13807-1ch9wrp centos-7-x64:/tmp/apply_manifest.pp.cMq5yJ {:ignore => }
+localhost $ scp /tmp/beaker20151109-12989-iond0f centos-7-x64:/tmp/apply_manifest.pp.Biy2Qi {:ignore => }
     should work with no errors (FAILED - 1)
-Destroying vagrant boxes
-==> centos-7-x64: Forcing shutdown of VM...
-==> centos-7-x64: Destroying VM and associated drives...
- 
+Warning: ssh connection to centos-7-x64 has been terminated
+Cleaning up docker
+
 Failures:
- 
+
   1) openldap::client running puppet code should work with no errors
      Failure/Error: apply_manifest(pp, :catch_failures => true)
      Beaker::Host::CommandFailure:
        Host 'centos-7-x64' exited with 1 running:
-        puppet apply --verbose --detailed-exitcodes /tmp/apply_manifest.pp.cMq5yJ
+        puppet apply --verbose --detailed-exitcodes /tmp/apply_manifest.pp.Biy2Qi
        Last 10 lines of output were:
-       	Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Could not find declared class openldap::client at /tmp/apply_manifest.pp.cMq5yJ:1 on node centos-7-x64
-       	Wrapped exception:
-       	Could not find declared class openldap::client
-       	Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Could not find declared class openldap::client at /tmp/apply_manifest.pp.cMq5yJ:1 on node centos-7-x64
+       	Info: Loading facts
+       	Error: Evaluation Error: Error while evaluating a Resource Statement, Could not find declared class openldap::client at /tmp/apply_manifest.pp.Biy2Qi:1:9 on node centos-7-x64.wrk.cby.camptocamp.com
 ...
-Finished in 13.13 seconds (files took 3 minutes 51 seconds to load)
+Finished in 12.43 seconds (files took 4 minutes 10.8 seconds to load)
 1 example, 1 failure
- 
+
 Failed examples:
- 
+
 rspec ./spec/acceptance/openldap__client_spec.rb:5 # openldap::client running puppet code should work with no errors
 ```
 
 #### LINE 1
 The command to launch includes the nodeset to use in the environment variable BEAKER_set and specify the acceptance test to run.
 
-#### LINE 3 – 4
+#### LINE 6 – 7
 The label of the describe blocks in the acceptance test (line 3 and 4 of `spec/acceptance/openldap__client_spec.rb`)
 
-#### LINE 5
-Scp Puppet manifests to the virtual machine
+#### LINE 8
+Scp the Puppet manifests to run to th container
 
-#### LINE 6
+#### LINE 9
 Result of the test (failure)
 
-#### LINE 13 – 22
+#### LINE 14 – 23
 Detail of the failure
 
-#### LINE 24
+#### LINE 25
 Acceptance test run timer summary
 
 #### LINE 25
