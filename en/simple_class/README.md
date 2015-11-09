@@ -423,22 +423,25 @@ Now we have the behavior we wanted. We can connect to an ldap server. At least o
 ```shell
 $ BEAKER_set=debian-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
+Beaker::Hypervisor, found some docker boxes to create
+Provisioning docker
+provisioning debian-7-x64
+...
 openldap::client
   running puppet code
-localhost $ scp /tmp/beaker20150301-5515-13tres9 debian-7-x64:/tmp/apply_manifest.pp.XUHQAo {:ignore => }
+localhost $ scp /tmp/beaker20151109-17819-1cgpd9x debian-7-x64:/tmp/apply_manifest.pp.GSJRBb {:ignore => }
     should work with no errors (FAILED - 1)
     can connect to an ldap test server with ldapsearch (FAILED - 2)
-Destroying vagrant boxes
-==> debian-7-x64: Forcing shutdown of VM...
-==> debian-7-x64: Destroying VM and associated drives...
- 
+Warning: ssh connection to debian-7-x64 has been terminated
+Cleaning up docker
+
 Failures:
- 
+
   1) openldap::client running puppet code should work with no errors
      Failure/Error: apply_manifest(pp, :catch_failures => true)
      Beaker::Host::CommandFailure:
        Host 'debian-7-x64' exited with 4 running:
-        puppet apply --verbose --detailed-exitcodes /tmp/apply_manifest.pp.XUHQAo
+        puppet apply --verbose --detailed-exitcodes /tmp/apply_manifest.pp.GSJRBb
        Last 10 lines of output were:
        	Error: Execution of '/usr/bin/apt-get -q -y -o DPkg::Options::=--force-confold install openldap-clients' returned 100: Reading package lists...
        	Building dependency tree...
@@ -448,22 +451,22 @@ Failures:
        	Building dependency tree...
        	Reading state information...
        	E: Unable to locate package openldap-clients
-       	Info: Creating state file /var/lib/puppet/state/state.yaml
-       	Notice: Finished catalog run in 0.71 seconds
+       	Info: Creating state file /opt/puppetlabs/puppet/cache/state/state.yaml
+       	Notice: Applied catalog in 0.90 seconds
 ...
   2) openldap::client running puppet code can connect to an ldap test server with ldapsearch
-     Failure/Error: ldapsearch('ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
+     Failure/Error: ldapsearch('-LLL -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
      Beaker::Host::CommandFailure:
        Host 'debian-7-x64' exited with 127 running:
-        ldapsearch ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password
+        ldapsearch -LLL -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password
        Last 10 lines of output were:
        	bash: ldapsearch: command not found
 ...
-Finished in 12.91 seconds (files took 4 minutes 30.9 seconds to load)
+Finished in 14.53 seconds (files took 2 minutes 32.3 seconds to load)
 2 examples, 2 failures
- 
+
 Failed examples:
- 
+
 rspec ./spec/acceptance/openldap__client_spec.rb:5 # openldap::client running puppet code should work with no errors
 rspec ./spec/acceptance/openldap__client_spec.rb:15 # openldap::client running puppet code can connect to an ldap test server with ldapsearch
 ```
@@ -554,9 +557,10 @@ gem 'puppet',                 :require => false
 gem 'beaker-rspec',           :require => false
 gem 'puppetlabs_spec_helper', :require => false
 gem 'rspec-puppet-facts',     :require => false
-view rawGemfile.rb hosted with ❤ by GitHub
+```
+
 And update your gemset:
-1
+```shell
 $ bundle update
 ```
 
