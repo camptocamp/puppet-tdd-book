@@ -109,38 +109,42 @@ You need to add a node file for Beaker. Node files indicate the nodes that the t
 $ mkdir -p spec/acceptance/nodesets
 ```
 
-Now, we’ll create two nodesets to run acceptance tests on Vagrant. One for Centos 7 64bits in `spec/acceptance/nodesets/centos-7-x86_64-vagrant.yml`:
+Now, we’ll create two nodesets to run acceptance tests on Docker.
+
+One for Centos 7 64bits in `spec/acceptance/nodesets/centos-7-x86_64-vagrant.yml`:
 
 ```yaml
 HOSTS:
   centos-7-x64:
     platform: el-7-x86_64
-    hypervisor: vagrant
-    box: puppetlabs/centos-7.0-64-nocm
+    hypervisor: docker
+    image: centos:7
 CONFIG:
-  type: foss
+  type: aio
 ```
   
 ### LINE 3
 Platform to use to setup Beaker
 
 ### LINE 4
-Hypervisor to use; here we’ll use Vagrant because it is probably the most robust one for now, but you could also try with another hypervisor such as Docker or OpenStack.
+Hypervisor to use; here we’ll use Docker because we'll then be able to run acceptance tests on Travis CI.
 
 ### LINE 5
-Vagrant box to use (from [https://vagrantcloud.com](https://vagrantcloud.com))
+Docker image from [https://hub.docker.com](Docker Hub) box to use.
 
 ### LINE 7
-Tells Beaker that we are using Puppet OpenSource (installation path differs from Puppet Enterprise) And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7-x86_64-vagrant.yml`:
+Tells Beaker that we are using Puppet All-In-One installation (installation path differs from Puppet Enterprise)
+
+And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7-x86_64-vagrant.yml`:
 
 ```yaml
 HOSTS:
   debian-7-x64:
     platform: debian-7-amd64
-    hypervisor: vagrant
-    box: puppetlabs/debian-7.8-64-nocm
+    hypervisor: docker
+    image: debian:7
 CONFIG:
-  type: foss
+  type: aio
 ```
 
 ## CREATE SPEC_HELPER_ACCEPTANCE.RB
@@ -149,19 +153,16 @@ Next, you need to create a `spec/spec_helper_acceptance.rb` file to configure Be
 
 ```ruby
 require 'beaker-rspec'
- 
-hosts.each do |host|
-  # Install Puppet
-  on host, install_puppet
-end
- 
+
+install_puppet_agent_on hosts, {}
+
 RSpec.configure do |c|
   module_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
   module_name = module_root.split('-').last
- 
+
   # Readable test descriptions
   c.formatter = :documentation
- 
+
   # Configure all nodes in nodeset
   c.before :suite do
     # Install module
@@ -170,10 +171,10 @@ RSpec.configure do |c|
 end
 ```
 
-### LINE 3 – 6
-Install Puppet on every host in our nodeset. Beaker supports multiple hosts in a nodeset. This functionality will not be explained here.
+### LINE 3
+Install Puppet Agent (a.k.a. puppet AIO) on every host in our nodeset. Beaker supports multiple hosts in a nodeset. This functionality will not be explained here.
 
-### LINE 18
+### LINE 15
 Tells Beaker to scp our sourcedir into the spawned virtual machine’s `/etc/puppet/modules`.
 
 ## CONFIGURE UNIT TESTS
