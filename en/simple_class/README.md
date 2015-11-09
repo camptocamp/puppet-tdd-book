@@ -52,7 +52,7 @@ Run the manifest a second time and catch any change. Your manifest should conver
 If you run your tests right now, you should see a nasty block of errors because the `openldap::client` class doesn’t actually exist yet. Let’s test with the centos7 nodeset:
 
 ```shell
-$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb
 ...
 openldap::client
   running puppet code
@@ -222,7 +222,7 @@ and our acceptance test also passes.
 
 
 ```shell
-$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
   running puppet code
@@ -286,7 +286,7 @@ Declare a new test that actually runs the `ldapsearch` command. If you save and 
 
 
 ```shell
-$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
   running puppet code
@@ -381,7 +381,7 @@ Finished in 1.24 seconds (files took 0.69623 seconds to load)
 Then, the acceptance tests:
 
 ```shell
-$ BEAKER_set=centos-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
   running puppet code
@@ -400,7 +400,7 @@ Finished in 41.89 seconds (files took 3 minutes 47.9 seconds to load)
 Now we have the behavior we wanted. We can connect to an ldap server. At least on Centos/RedHat7… But what happens if you run the tests on Debian 7? Let’s see…
 
 ```shell
-$ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=debian-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
   running puppet code
@@ -612,7 +612,7 @@ It works!
 Let’s try the acceptance test with the Debian7 nodeset to test the actual behavior:
 
 ```shell
-$ BEAKER_set=debian-7-x86_64-vagrant bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=debian-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
 openldap::client
   running puppet code
