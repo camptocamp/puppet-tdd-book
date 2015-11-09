@@ -182,7 +182,10 @@ end
 Install Puppet Agent (a.k.a. puppet AIO) on every host in our nodeset. Beaker supports multiple hosts in a nodeset. This functionality will not be explained here.
 
 ### LINE 15
-Tells Beaker to scp our sourcedir into the spawned virtual machine’s `/etc/puppet/modules`.
+Tells Beaker to scp our sourcedir into container's modulepath.
+
+### LINE 16-18
+Tells Beaker to install dependencies into container’s modulepath.
 
 ## CONFIGURE UNIT TESTS
 We will use [rspec-puppet](https://github.com/rodjek/rspec-puppet) to run unit tests.
@@ -199,16 +202,18 @@ gem 'beaker-rspec',           :require => false
 gem 'puppetlabs_spec_helper', :require => false
 ```
 
-### CONFIGURE .FIXTURES.YML
+### CONFIGURE .fixtures.yml
 The `.fixtures.yml` file is a YAML file used by `puppetlabs_spec_helper` to setup an environment for your modules with all its dependencies in the `spec/fixtures directory`. You have to, at least, add an entry that adds a symlink to your code base:
 
 ```yaml
 fixtures:
+  forge_modules:
+    stdlib: 'puppetlabs-stdlib'
   symlinks:
     openldap: "#{source_dir}"
 ```
 
-### CONFIGURE RAKEFILE
+### CONFIGURE Rakefile
 
 You need to require `puppetlabs_spec_helper/rake_tasks` in your `Rakefile` so that you can call the spec rake task that will run the `spec_prep` task for preparing your test environment using the `.fixtures.yml` file, then run the `spec_standalone task` that actually launches the unit tests, and finally run the `spec_clean` task to clean up your testing environment by deleting all the stuff in the `spec/fixtures` directory.
 
@@ -216,7 +221,7 @@ You need to require `puppetlabs_spec_helper/rake_tasks` in your `Rakefile` so th
 require 'puppetlabs_spec_helper/rake_tasks'
 ```
 
-### CONFIGURE SPEC/SPEC_HELPER.RB
+### CONFIGURE spec/spec_helper.rb
 Simply use require `puppetlabs_spec_helper/module_spec_helper` for now
 
 ```ruby
