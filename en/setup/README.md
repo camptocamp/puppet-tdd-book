@@ -29,7 +29,7 @@ Every project needs a README file. It is common to use markdown to style its con
 ## LICENSE
 If you are not familiar with the various licenses commonly used in Open Source projects, visit « Choose A License » to have a look at some options. When you find one you are happy with, drop it in a file called LICENSE in the root of your project.
 
-## METADATA.JSON
+## metadata.json
 You should add a file named metadata.json in the root of your project in order to store some metadata needed to publish your module on the [Puppet Forge](https://forge.puppetlabs.com/).
 
 ```json
@@ -41,6 +41,10 @@ You should add a file named metadata.json in the root of your project in order t
   "summary": "Puppet OpenLDAP module",
   "source": "https://github.com/camptocamp/puppet-openldap",
   "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=3.2.0 <5.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
@@ -61,16 +65,16 @@ You should add a file named metadata.json in the root of your project in order t
 
 A few interesting lines:
 
-### LINE 8 – 9
-For the moment, we do not have dependencies, but we will probably have at least `puppetlabs-stdlib` later.
+### LINE 8 – 13
+We will probably depend on `puppetlabs-stdlib` at some point in our project.
 
-### LINE 10 – 23
+### LINE 14 – 27
 Declare the operating system supported by your module; this information will be automatically used by `rspec-puppet-facts` to loop over any supported operating system for tests.
 
 ## CONFIGURE ACCEPTANCE TESTS
 We will use Beaker to launch acceptance tests. [Beaker](https://github.com/puppetlabs/Beaker) is the Puppetlabs’s acceptance testing tool used to test the behavior of a Puppet module on different operating systems. It can run tests on various hypervisors, including virutalbox (through Vagrant), Docker or OpenStack. You can use Beaker to test [serverspec resources](http://serverspec.org/)).
 
-## CONFIGURE GEMFILE
+## CONFIGURE Gemfile
 Bundler is a dependency manager tool for Ruby projects. It reads its configuration from the project’s `Gemfile`.
 
 ```ruby
@@ -111,7 +115,7 @@ $ mkdir -p spec/acceptance/nodesets
 
 Now, we’ll create two nodesets to run acceptance tests on Docker.
 
-One for Centos 7 64bits in `spec/acceptance/nodesets/centos-7-x86_64-vagrant.yml`:
+One for Centos 7 64bits in `spec/acceptance/nodesets/centos-7.yml`:
 
 ```yaml
 HOSTS:
@@ -127,7 +131,7 @@ CONFIG:
 Platform to use to setup Beaker
 
 ### LINE 4
-Hypervisor to use; here we’ll use Docker because we'll then be able to run acceptance tests on Travis CI.
+Hypervisor to use ; here we’ll use Docker because we'll then be able to run acceptance tests on Travis CI.
 
 ### LINE 5
 Docker image from [https://hub.docker.com](Docker Hub) box to use.
@@ -135,7 +139,7 @@ Docker image from [https://hub.docker.com](Docker Hub) box to use.
 ### LINE 7
 Tells Beaker that we are using Puppet All-In-One installation (installation path differs from Puppet Enterprise)
 
-And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7-x86_64-vagrant.yml`:
+And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7.yml`:
 
 ```yaml
 HOSTS:
