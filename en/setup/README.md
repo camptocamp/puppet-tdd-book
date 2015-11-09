@@ -123,6 +123,8 @@ HOSTS:
     platform: el-7-x86_64
     hypervisor: docker
     image: centos:7
+    docker_preserve_image: true
+    docker_cmd: '["/usr/sbin/init"]'
 CONFIG:
   type: aio
 ```
@@ -136,7 +138,13 @@ Hypervisor to use ; here we’ll use Docker because we'll then be able to run ac
 ### LINE 5
 Docker image from [https://hub.docker.com](Docker Hub) box to use.
 
+### LINE 6
+Tell beaker to keep the Docker image for multiple spec runs. 
+
 ### LINE 7
+Launch init process instead of sshd.
+
+### LINE 9
 Tells Beaker that we are using Puppet All-In-One installation (installation path differs from Puppet Enterprise)
 
 And one for Debian 7 64bits in `spec/acceptance/nodesets/debian-7.yml`:
@@ -147,6 +155,8 @@ HOSTS:
     platform: debian-7-amd64
     hypervisor: docker
     image: debian:7
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
 CONFIG:
   type: aio
 ```
