@@ -123,7 +123,7 @@ Then, we’ll create a unit test file for the class openldap::client in `spec/cl
 The first thing to do in any test file is to require our `spec_helper.rb` file.
 
 ```ruby
-require ‘spec_helper’
+require 'spec_helper'
  
 describe 'openldap::client' do
   # tests will go here
@@ -149,44 +149,52 @@ If you run your test right now, you should also see a big block of errors becaus
 
 ```shell
 $ bundle exec rake spec SPEC_OPTS=-fd
+Notice: Preparing to install into /home/puppet-tdd/puppet-openldap/spec/fixtures/modules ...
+Notice: Downloading from https://forgeapi.puppetlabs.com ...
+Notice: Installing -- do not interrupt ...
+/home/puppet-tdd/puppet-openldap/spec/fixtures/modules
+└── puppetlabs-stdlib (v4.9.0)
 ...
 openldap::client
-  example at ./spec/classes/openldap__client_spec.rb:4 (FAILED - 1)
- 
+  should compile into a catalogue without dependency cycles (FAILED - 1)
+
 Failures:
- 
-  1) openldap::client 
+
+  1) openldap::client should compile into a catalogue without dependency cycles
      Failure/Error: it { is_expected.to compile.with_all_deps }
-     Puppet::Error:
-       Could not find class openldap::client for foo.example.com on node foo.example.com
-...
-Finished in 0.09918 seconds (files took 0.73802 seconds to load)
+       error during compilation: Evaluation Error: Error while evaluating a Function Call, Could not find class ::openldap::client for foo.example.com at line 1:1 on node foo.example.com
+     # ./spec/classes/openldap__client_spec.rb:4:in `block (2 levels) in <top (required)>'
+
+Finished in 0.14854 seconds (files took 0.6331 seconds to load)
 1 example, 1 failure
- 
+
 Failed examples:
- 
-rspec ./spec/classes/openldap__client_spec.rb:4 # openldap::client 
+
+rspec ./spec/classes/openldap__client_spec.rb:4 # openldap::client should compile into a catalogue without dependency cycles
 ```
 
 #### LINE 1
 The command to run to launch unit tests. It tells bundler to exec the rake task spec (defined in `puppetlabs_spec_helper`) with the environment variable `SPEC_OPTS` set to `-d` which sets the output format to documentation for a cleaner output.
 
-#### LINE 3
+#### LINE 2 – 6
+Install dependencies fixtures from .fixtures.yml into spec/fixtures
+
+#### LINE 8
 The label of the describe block (line 3 of `spec/classes/openldap__client_spec.rb`)
 
-#### LINE 4
+#### LINE 9
 Result of the unit test
 
-#### LINE 6 – 11
+#### LINE 11 – 18
 Details of the failures
 
-#### LINE 13
+#### LINE 19
 Unit test timer summary
 
-#### LINE 14
+#### LINE 20
 Unit test summary
 
-#### LINE 16 – 18
+#### LINE 21 – 23
 Failures summary
 
 
@@ -200,7 +208,7 @@ Now that everything is set up, let’s write the actual Puppet code! First, crea
 $ mkdir manifests
 ```
 
-Next, create our `openldap::client` class
+Next, create our `openldap::client` class into manifests/client.pp
 
 ```puppet
 class openldap::client {
@@ -213,9 +221,9 @@ If you save and run the unit tests again now, you’ll see that now that the cla
 $ bundle exec rake spec SPEC_OPTS=-fd
 ...
 openldap::client
-  should compile the catalogue without cycles
-...
-Finished in 0.12892 seconds (files took 0.68366 seconds to load)
+  should compile into a catalogue without dependency cycles
+
+Finished in 0.15845 seconds (files took 0.62593 seconds to load)
 1 example, 0 failures
 ```
 
@@ -223,18 +231,21 @@ and our acceptance test also passes.
 
 
 ```shell
-$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb
+...
+Beaker::Hypervisor, found some docker boxes to create
+Provisioning docker
+provisioning centos-7-x64
 ...
 openldap::client
   running puppet code
-localhost $ scp /tmp/beaker20150301-6649-14wr0e3 centos-7-x64:/tmp/apply_manifest.pp.tvxw9J {:ignore => }
-localhost $ scp /tmp/beaker20150301-6649-m7w845 centos-7-x64:/tmp/apply_manifest.pp.sVZ7Le {:ignore => }
+localhost $ scp /tmp/beaker20151109-13967-1rfktlz centos-7-x64:/tmp/apply_manifest.pp.zjO9WQ {:ignore => }
+localhost $ scp /tmp/beaker20151109-13967-cx62q5 centos-7-x64:/tmp/apply_manifest.pp.2P1ikI {:ignore => }
     should work with no errors
-Destroying vagrant boxes
-==> centos-7-x64: Forcing shutdown of VM...
-==> centos-7-x64: Destroying VM and associated drives...
- 
-Finished in 24.44 seconds (files took 3 minutes 54.3 seconds to load)
+Warning: ssh connection to centos-7-x64 has been terminated
+Cleaning up docker
+
+Finished in 16.44 seconds (files took 3 minutes 15.3 seconds to load)
 1 example, 0 failures
 ```
 
@@ -287,34 +298,39 @@ Declare a new test that actually runs the `ldapsearch` command. If you save and 
 
 
 ```shell
-$ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
+BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb
+...
+Beaker::Hypervisor, found some docker boxes to create
+Provisioning docker
+provisioning centos-7-x64
+Using docker server at 0.0.0.0
 ...
 openldap::client
   running puppet code
-localhost $ scp /tmp/beaker20150301-22766-1prxndo centos-7-x64:/tmp/apply_manifest.pp.uGDdAM {:ignore => }
-localhost $ scp /tmp/beaker20150301-22766-3hpl3l centos-7-x64:/tmp/apply_manifest.pp.tTv0wx {:ignore => }
+localhost $ scp /tmp/beaker20151109-14665-oorjrm centos-7-x64:/tmp/apply_manifest.pp.mTwar0 {:ignore => }
+localhost $ scp /tmp/beaker20151109-14665-k4dxcy centos-7-x64:/tmp/apply_manifest.pp.WoIEM1 {:ignore => }
     should work with no errors
     can connect to an ldap test server with ldapsearch (FAILED - 1)
-Destroying vagrant boxes
-==> centos-7-x64: Forcing shutdown of VM...
-==> centos-7-x64: Destroying VM and associated drives...
- 
+Warning: ssh connection to centos-7-x64 has been terminated
+Cleaning up docker
+
 Failures:
- 
+
   1) openldap::client running puppet code can connect to an ldap test server with ldapsearch
-     Failure/Error: ldapsearch('ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
+     Failure/Error: ldapsearch('-LLL -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password') do |r|
      Beaker::Host::CommandFailure:
        Host 'centos-7-x64' exited with 127 running:
-        ldapsearch ldapsearch -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password
+        ldapsearch -LLL -h ldap.forumsys.com -D "uid=tesla,dc=example,dc=com" -b "dc=example,dc=com" -w password
        Last 10 lines of output were:
        	bash: ldapsearch: command not found
 ...
-Finished in 24.45 seconds (files took 4 minutes 55.3 seconds to load)
+Finished in 16.24 seconds (files took 3 minutes 35.2 seconds to load)
 2 examples, 1 failure
- 
+
 Failed examples:
- 
-rspec ./spec/acceptance/openldap__client_spec.rb:15 # openldap::client running puppet code can connect to an ldap test server with ldapsearch```
+
+rspec ./spec/acceptance/openldap__client_spec.rb:15 # openldap::client running puppet code can connect to an ldap test server with ldapsearch
+```
 
 The `ldapsearch` command is available in the `openldap-client` package on RedHat, so let’s be sure that a package resource with named `openldap-clients` exists in the catalog.
 
