@@ -400,17 +400,21 @@ Then, the acceptance tests:
 ```shell
 $ BEAKER_set=centos-7 bundle exec rspec spec/acceptance/openldap__client_spec.rb 
 ...
+Beaker::Hypervisor, found some docker boxes to create
+Provisioning docker
+provisioning centos-7-x64
+Using docker server at 0.0.0.0
+...
 openldap::client
   running puppet code
-localhost $ scp /tmp/beaker20150301-450-1jb3jab centos-7-x64:/tmp/apply_manifest.pp.R1XgIN {:ignore => }
-localhost $ scp /tmp/beaker20150301-450-1ddmrlq centos-7-x64:/tmp/apply_manifest.pp.JOoDYn {:ignore => }
+localhost $ scp /tmp/beaker20151109-15756-1jslev3 centos-7-x64:/tmp/apply_manifest.pp.leqXMR {:ignore => }
+localhost $ scp /tmp/beaker20151109-15756-ipwpl3 centos-7-x64:/tmp/apply_manifest.pp.Qf66ii {:ignore => }
     should work with no errors
     can connect to an ldap test server with ldapsearch
-Destroying vagrant boxes
-==> centos-7-x64: Forcing shutdown of VM...
-==> centos-7-x64: Destroying VM and associated drives...
- 
-Finished in 41.89 seconds (files took 3 minutes 47.9 seconds to load)
+Warning: ssh connection to centos-7-x64 has been terminated
+Cleaning up docker
+
+Finished in 18.18 seconds (files took 3 minutes 7 seconds to load)
 2 examples, 0 failures
 ```
 
